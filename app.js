@@ -5,9 +5,6 @@ const User = require('./models/user');
 const graphqlHttp = require('express-graphql');
 
 const {buildSchema} = require('graphql');
-//
-// const graphQlSchemas = require('./graphql/schemas/index');
-// const graphQlResolvers = require('./graphql/resolvers/index');
 
 const app = express();
 
