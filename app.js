@@ -17,7 +17,7 @@ app.use((req, res, next) => {
    next();
 });
 
-// Schemas and resolvers
+// app.use ( Schemas and resolvers go here )
 
 
 function throwError(err) {
