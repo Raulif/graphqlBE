@@ -2,12 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const User = require('./models/user');
-const graphqlHttp = require('express-graphql');
-
-const {buildSchema} = require('graphql');
-//
-// const graphQlSchemas = require('./graphql/schemas/index');
-// const graphQlResolvers = require('./graphql/resolvers/index');
 
 const app = express();
 
@@ -23,68 +17,7 @@ app.use((req, res, next) => {
    next();
 });
 
-app.use(
-    '/graphql',
-    graphqlHttp({
-      schema: buildSchema(`
-         type User {
-            _id: ID!
-            email: String
-            password: String
-            name: String
-         }
-        
-         input UserInput {
-            email: String
-            password: String
-            name: String
-         }
-      
-         type RootQuery {
-            users: [User!]!
-            user(name: String): User
-         }
-         
-         type RootMutation {
-            createUser(userInput: UserInput): User
-         }
-         
-         schema {
-            query: RootQuery
-            mutation: RootMutation
-         }
-      `),
-   rootValue: {
-      users: () => {
-         return User.find({}).then(users => {
-            return users.map(user => {
-               return {...user._doc}
-            })
-         }).catch(throwError);
-      },
-      user: args => {
-         return User.findOne({name: args.name})
-             .then(user => {
-                return {...user._doc}
-             })
-             .catch(throwError);
-      },
-      createUser: args => {
-         console.log(args);
-         const user = new User({
-            email: args.userInput.email,
-            password: args.userInput.password,
-            name: args.userInput.name
-         });
-         return user
-             .save()
-             .then(result => {
-                return {...result._doc}
-             }).catch(throwError);
-      }
-   },
-   graphiql: true
-}));
+// Schemas and resolvers
 
 
 function throwError(err) {
